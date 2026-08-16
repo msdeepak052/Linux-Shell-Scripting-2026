@@ -1,6 +1,4 @@
-Absolutely. Since you want **coding questions**, not theory, I’d prepare these 20 in roughly this order. They cover the Bash topics most commonly tested for DevOps / Platform Engineer interviews.
-
-## Top 20 Bash Scripting Coding Questions
+# Top 20 Bash Scripting Coding Questions
 
 | #      | Coding question                                                                                    | Topics tested                             |
 | ------ | -------------------------------------------------------------------------------------------------- | ----------------------------------------- |
