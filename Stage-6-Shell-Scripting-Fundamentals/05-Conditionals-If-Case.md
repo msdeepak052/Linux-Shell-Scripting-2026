@@ -215,6 +215,105 @@ nginx is running
 
 - "Write a script to check whether a given IP address is a valid IPv4 address." — asked at *Akamai*
 
+**Simple Bash script using `awk`**, you can do it like this:
+
+```bash
+#!/bin/bash
+
+read -p "Enter IP address: " ip
+
+if echo "$ip" | awk -F. '
+NF != 4 { exit 1 }
+{
+    for (i = 1; i <= 4; i++)
+        if ($i !~ /^[0-9]+$/ || $i < 0 || $i > 255)
+            exit 1
+}
+'; then
+    echo "Valid IPv4 address"
+else
+    echo "Invalid IPv4 address"
+fi
+```
+
+### Example
+
+```text
+Enter IP address: 192.168.1.10
+Valid IPv4 address
+```
+
+```text
+Enter IP address: 192.168.1.300
+Invalid IPv4 address
+```
+
+### Interview-friendly version
+
+If they ask this in a **DevOps/Bash interview**, I'd give the shorter version:
+
+```bash
+read -p "Enter IP: " ip
+
+if [[ "$ip" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] &&
+   awk -F. '{for(i=1;i<=4;i++) if($i>255) exit 1}' <<< "$ip"
+then
+    echo "Valid IPv4"
+else
+    echo "Invalid IPv4"
+fi
+```
+
+The important point is that the **regex checks the structure** (`x.x.x.x`), while `awk` checks that each octet is **0–255**.
+
+
+**Simplest Python way** is to use Python's built-in `ipaddress` module:
+
+```python
+import ipaddress
+
+ip = input("Enter IP address: ")
+
+try:
+    ipaddress.IPv4Address(ip)
+    print("Valid IPv4 address")
+except ValueError:
+    print("Invalid IPv4 address")
+```
+
+### Example
+
+```text
+Enter IP address: 192.168.1.10
+Valid IPv4 address
+```
+
+```text
+Enter IP address: 192.168.1.300
+Invalid IPv4 address
+```
+
+### Without using a module — good for interviews
+
+```python
+ip = input("Enter IP address: ")
+
+parts = ip.split(".")
+
+if len(parts) == 4 and all(part.isdigit() and 0 <= int(part) <= 255 for part in parts):
+    print("Valid IPv4")
+else:
+    print("Invalid IPv4")
+```
+
+**Easy logic to remember:**
+
+1. Split by `.`
+2. Must have exactly **4 parts**
+3. Every part must be a number
+4. Every number must be **0–255**
+
+
 ## Interview Key Points
 
 - **Default rule to stop the confusion**: in a `#!/bin/bash` script, use `[[ ]]` for string/file/logical tests and `(( ))` for arithmetic — always. Only drop to `[ ]` if the script must run under POSIX `sh`/`dash` (no bashisms allowed). State this decision rule directly if asked "which should I use" — it's exactly the kind of clear, opinionated answer that reads as senior-level, versus listing all three with no recommendation.
