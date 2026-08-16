@@ -1,6 +1,6 @@
 # **AWK hands-on/interviews**
 
-# 1. First understand how AWK works
+## 1. First understand how AWK works
 
 Suppose `data.txt` contains:
 
